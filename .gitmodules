@@ -1,0 +1,3 @@
+[submodule "highdicom"]
+	path = highdicom
+	url = git@github.com:ImagingDataCommons/highdicom.git
