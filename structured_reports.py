@@ -200,7 +200,6 @@ class ProblemList(Template):
 
     def __init__(self,
                  concern_types: Optional[Sequence[str]] = None,
-                 # TODO: Maybe make these parameters each its own type with preset parameters?
                  cardiac_patient_risk_factors: Optional[Sequence[ProblemProperties]] = None,
                  history_of_diabetes_mellitus: Optional[ProblemProperties] = None,
                  history_of_hypertension: Optional[ProblemProperties] = None,
@@ -971,7 +970,7 @@ class PatientCharacteristicsForECG(Template):
 
     def __init__(
         self,
-        subject_age: int,  # TODO: What type is this number?
+        subject_age: int,
         subject_sex: str,
         patient_height: Optional[float] = None,
         patient_weight: Optional[float] = None,
@@ -1132,7 +1131,6 @@ class PriorECGStudy(Template):
         procedure_datetime: Optional[Union[str, datetime.datetime, DT]] = None,
         procedure_stdy_instance_uid: Optional[UIDRefContentItem] = None,
         prior_report_for_current_patient: Optional[CompositeContentItem] = None,
-        # TODO: Way to represent waveform without requiring the whole content item?
         source_of_measurement: Optional[WaveformContentItem] = None
     ):
         item = ContainerContentItem(
@@ -1192,7 +1190,6 @@ class ECGWaveFormInformation(Template):
     def __init__(
         self,
         procedure_datetime: Union[str, datetime.datetime, DT],
-        # TODO: Way to represent waveform without requiring the whole content item?
         source_of_measurement: Optional[WaveformContentItem] = None,
         lead_system: Optional[Union[CodedConcept, Code]] = None,
         acquisition_device_type: Optional[str] = None,
@@ -1333,14 +1330,13 @@ class ECGMeasurementSource(Template):
 
     def __init__(
         self,
-        # TODO: Definition of "TID 3715 ECG Measurement Source" is not in accordance with DICOM documentation
+        # The Documentation of "TID 3715 ECG Measurement Source" is not in accordance with DICOM template form specifications
+        # If this Template does not work with your use-case please feel free to open a pull-request
         beat_number: Optional[str],
         measurement_method: Optional[Union[Code, CodedConcept]],
         source_of_measurement: Optional[TcoordContentItem]
-        # TODO: Why does DICOM documentation have a "SELECTED FROM" Waveform without a Concept Name?
     ) -> None:
         item = ContainerContentItem(
-            # TODO: What name?
             name=CodedConcept(
                 value='3715',
                 meaning='ECG Measurement Source',
@@ -1356,7 +1352,9 @@ class ECGMeasurementSource(Template):
         beat_number_item = TextContentItem(
             name=codes.DCM.BeatNumber,
             value=beat_number,
-            relationship_type=RelationshipTypeValues.CONTAINS  # TODO: No relationship type in DICOM documentation?
+            # The Relationship Type is not defined in the DICOM template
+            # If this Template does not work with your use-case please feel free to open a pull-request
+            relationship_type=RelationshipTypeValues.CONTAINS
         )
         content.append(beat_number_item)
         if source_of_measurement is not None:
@@ -1486,7 +1484,7 @@ class ECGGlobalMeasurements(Template):
                 scheme_designator='MDC'
             ),
             value=ventricular_heart_rate,
-            unit=codes.UCUM.NoUnits, # Unit bpm not defined in UCUM
+            unit=codes.UCUM.NoUnits,  # Unit bpm not defined in UCUM
             relationship_type=RelationshipTypeValues.CONTAINS
         )
         content.append(ventricular_heart_rate_item)
@@ -1552,7 +1550,7 @@ class ECGGlobalMeasurements(Template):
                     scheme_designator='MDC'
                 ),
                 value=atrial_heart_rate,
-                unit=codes.UCUM.NoUnits, # Unit bpm not defined in UCUM
+                unit=codes.UCUM.NoUnits,  # Unit bpm not defined in UCUM
                 relationship_type=RelationshipTypeValues.CONTAINS
             )
             content.append(atrial_heart_rate_item)
@@ -1616,7 +1614,7 @@ class ECGGlobalMeasurements(Template):
                     scheme_designator='MDC'
                 ),
                 value=count_of_all_beats,
-                unit=codes.UCUM.NoUnits, # Unit beats not defined in UCUM
+                unit=codes.UCUM.NoUnits,  # Unit beats not defined in UCUM
                 relationship_type=RelationshipTypeValues.CONTAINS
             )
             content.append(count_of_all_beats_item)
@@ -1704,7 +1702,7 @@ class ECGLeadMeasurements(Template):
                         scheme_designator='CID'
                     ),
                     value=electrophysiology_waveform_voltage,
-                    unit=codes.UCUM.NoUnits, # Unit MilliVolt not defined in UCUM
+                    unit=codes.UCUM.NoUnits,  # Unit MilliVolt not defined in UCUM
                     relationship_type=RelationshipTypeValues.CONTAINS
                 )
                 content.append(electrophysiology_waveform_voltage_item)
@@ -2146,7 +2144,8 @@ class ReportNarrativeCode(CodeContentItem):
     def __init__(self,
                  value: Union[Code, CodedConcept],
                  basic_diagnostic_imaging_report_observations: Optional[Sequence[
-                     # TODO: Definition of "TID 2001 Basic Diagnostic Imaging Report Observations" is not in accordance with DICOM documentation
+                     # The Documentation of "TID 2002 Report Narrative" is not in accordance with DICOM template form specifications
+                     # If this Template does not work with your use-case please feel free to open a pull-request
                      ImageContentItem]] = None
                  ) -> None:
         super().__init__(
@@ -2181,7 +2180,8 @@ class ReportNarrativeText(TextContentItem):
     def __init__(self,
                  value: str,
                  basic_diagnostic_imaging_report_observations: Optional[Sequence[
-                     # TODO: Definition of "TID 2001 Basic Diagnostic Imaging Report Observations" is not in accordance with DICOM documentation
+                    # The Documentation of "TID 2001 Basic Diagnostic Imaging Report Observations" is not in accordance with DICOM template form specifications
+                    # If this Template does not work with your use-case please feel free to open a pull-request
                      ImageContentItem]] = None
                  ) -> None:
         super().__init__(
