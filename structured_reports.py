@@ -127,33 +127,6 @@ class Therapy(CodeContentItem):
             self.ContentSequence = content
 
 
-class ClinicalReport(CompositeContentItem):
-    """:sct:`371524004`
-    Clinical Report
-    """
-
-    def __init__(self,
-                 document_title: Optional[Union[CodedConcept, Code]] = None
-                 ) -> None:
-        super().__init__(
-            name=codes.SCT.ClinicalReport,
-            # TODO: What SOP to use here since Clinical Report is Snowmed?
-            # referenced_sop_class_uid="",
-            # referenced_sop_instance_uid="",
-            relationship_type=RelationshipTypeValues.HAS_PROPERTIES
-        )
-        content = ContentSequence()
-        if document_title is not None:
-            document_title_item = CodeContentItem(
-                name=codes.DCM.DocumentTitle,
-                value=document_title,
-                relationship_type=RelationshipTypeValues.HAS_PROPERTIES
-            )
-            content.append(document_title_item)
-        if len(content) > 0:
-            self.ContentSequence = content
-
-
 class ProblemProperties(Template):
     """:dcm:`TID 3829 <part16/sect_TID_3829.html>`
     Problem Properties
@@ -326,7 +299,7 @@ class ProcedureProperties(Template):
                  name: Union[CodedConcept, Code],
                  value: Union[CodedConcept, Code],
                  procedure_datetime: Optional[Union[str, datetime.datetime, DT]] = None,
-                 clinical_reports: Optional[Sequence[ClinicalReport]] = None,
+                 clinical_reports: Optional[Sequence[CompositeContentItem]] = None,
                  clinical_reports_text: Optional[Sequence[str]] = None,
                  service_delivery_location: Optional[str] = None,
                  service_performer_person: Optional[str] = None,
@@ -354,9 +327,9 @@ class ProcedureProperties(Template):
                     'Argument "clinical_reports" must be a sequence.'
                 )
             for clinical_report in clinical_reports:
-                if not isinstance(clinical_report, ClinicalReport):
+                if not isinstance(clinical_report, CompositeContentItem):
                     raise TypeError(
-                        'Items of argument "clinical_reports" must have type ClinicalReport.'
+                        'Items of argument "clinical_reports" must have type CompositeContentItem.'
                     )
                 content.append(clinical_report)
         if clinical_reports_text is not None:
