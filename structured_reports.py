@@ -571,7 +571,7 @@ class RelevantDiagnosticTestsAndOrLaboratoryData(Template):
                     scheme_designator='LN'
                 ),
                 value=cholesterol_in_HDL,
-                unit=codes.UCUM.NoUnits,  # TODO: No Unit UCUM.MilligramPerDeciliter?
+                unit=codes.UCUM.NoUnits,  # Unit MilligramPerDeciliter not defined in UCUM
                 relationship_type=RelationshipTypeValues.HAS_PROPERTIES
             )
             content.append(cholesterol_in_HDL_item)
@@ -583,7 +583,7 @@ class RelevantDiagnosticTestsAndOrLaboratoryData(Template):
                     scheme_designator='LN'
                 ),
                 value=cholesterol_in_LDL,
-                unit=codes.UCUM.NoUnits,  # TODO: No Unit UCUM.MilligramPerDeciliter?
+                unit=codes.UCUM.NoUnits,  # Unit MilligramPerDeciliter not defined in UCUM
                 relationship_type=RelationshipTypeValues.HAS_PROPERTIES
             )
             content.append(cholesterol_in_LDL_item)
@@ -1039,7 +1039,7 @@ class PatientCharacteristicsForECG(Template):
                     scheme_designator='LN'
                 ),
                 value=patient_weight,
-                unit=codes.UCUM.NoUnits,  # TODO: No Unit UCUM.kg?
+                unit=codes.UCUM.NoUnits,  # Unit kg not defined in UCUM
                 relationship_type=RelationshipTypeValues.CONTAINS
             )
             content.append(patient_weight_item)
@@ -1426,7 +1426,7 @@ class NumberOfEctopicBeats(NumContentItem):
         super().__init__(
             name=codes.MDC.NumberOfEctopicBeats,
             value=value,
-            unit=codes.UCUM.NoUnits,  # TODO No Unit UCUM.beats?
+            unit=codes.UCUM.NoUnits,  # Unit beats not defined in UCUM
             relationship_type=RelationshipTypeValues.CONTAINS
         )
         content = ContentSequence()
@@ -1486,7 +1486,7 @@ class ECGGlobalMeasurements(Template):
                 scheme_designator='MDC'
             ),
             value=ventricular_heart_rate,
-            unit=codes.UCUM.NoUnits,  # TODO No Unit UCUM.bpm?
+            unit=codes.UCUM.NoUnits, # Unit bpm not defined in UCUM
             relationship_type=RelationshipTypeValues.CONTAINS
         )
         content.append(ventricular_heart_rate_item)
@@ -1552,7 +1552,7 @@ class ECGGlobalMeasurements(Template):
                     scheme_designator='MDC'
                 ),
                 value=atrial_heart_rate,
-                unit=codes.UCUM.NoUnits,  # TODO No Unit UCUM.bpm?
+                unit=codes.UCUM.NoUnits, # Unit bpm not defined in UCUM
                 relationship_type=RelationshipTypeValues.CONTAINS
             )
             content.append(atrial_heart_rate_item)
@@ -1616,7 +1616,7 @@ class ECGGlobalMeasurements(Template):
                     scheme_designator='MDC'
                 ),
                 value=count_of_all_beats,
-                unit=codes.UCUM.NoUnits,  # TODO No Unit UCUM.beats?
+                unit=codes.UCUM.NoUnits, # Unit beats not defined in UCUM
                 relationship_type=RelationshipTypeValues.CONTAINS
             )
             content.append(count_of_all_beats_item)
@@ -1704,7 +1704,7 @@ class ECGLeadMeasurements(Template):
                         scheme_designator='CID'
                     ),
                     value=electrophysiology_waveform_voltage,
-                    unit=codes.UCUM.NoUnits,  # TODO No Unit UCUM.MilliVolt?
+                    unit=codes.UCUM.NoUnits, # Unit MilliVolt not defined in UCUM
                     relationship_type=RelationshipTypeValues.CONTAINS
                 )
                 content.append(electrophysiology_waveform_voltage_item)
