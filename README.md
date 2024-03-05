@@ -8,7 +8,7 @@ This repository contains code for additional SR-template structures extending th
 
 Additionally, a [Kaapana](https://github.com/kaapana/kaapana) extension has been developed to enable querying of annotation metadata(segmentation or structure reports) within their respective report modalities, such as images (CT, MR, CR...) or waveforms (ECG). This allows cohorts to be selected multimodally and with greater specificity to additional reports. To install the extension, refer to the instructions [here](./annotation-collect-metata/README.md).
 
-For more detailed description we refer you to our associated [paper](https://doi.org/10.1007/978-3-658-44037-4_39).
+For more detailed description we refer to our associated [paper](https://doi.org/10.1007/978-3-658-44037-4_39).
 
 ## Abstract
 
