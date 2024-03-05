@@ -1,4 +1,0 @@
----
-global:
-    image: "dag-annotation-collect-metadata"
-    action: "copy"
