@@ -35,64 +35,64 @@ from highdicom.sr.templates import (
 )
 
 
-class ConcernType(CodeContentItem):
-    """:dcm:`CID 3769 <part16/sect_CID_3769.html>`
-    Concern Type
-    """
+# class ConcernType(CodeContentItem):
+#     """:dcm:`CID 3769 <part16/sect_CID_3769.html>`
+#     Concern Type
+#     """
 
-    def __init__(
-        self,
-        type: Union[Code, CodedConcept],
-        value: Union[Code, CodedConcept],
-        datetime_started: Optional[Union[str, datetime.datetime, DT]] = None,
-        datetime_problem_resolved: Optional[Union[str, datetime.datetime, DT]] = None,
-        status: Optional[Union[Code, CodedConcept]] = None,
-        severity: Optional[Union[Code, CodedConcept]] = None,
-        stage: Optional[Union[Code, CodedConcept]] = None
-    ) -> None:
-        super().__init__(
-            name=type,
-            value=value,
-            relationship_type=RelationshipTypeValues.HAS_CONCEPT_MOD
-        )
-        content = ContentSequence()
-        if datetime_started is not None:
-            datetime_started_item = DateTimeContentItem(
-                name=codes.DCM.DatetimeConcernResolved,
-                value=datetime_started,
-                relationship_type=RelationshipTypeValues.HAS_PROPERTIES
-            )
-            content.append(datetime_started_item)
+#     def __init__(
+#         self,
+#         type: Union[Code, CodedConcept],
+#         value: Union[Code, CodedConcept],
+#         datetime_started: Optional[Union[str, datetime.datetime, DT]] = None,
+#         datetime_problem_resolved: Optional[Union[str, datetime.datetime, DT]] = None,
+#         status: Optional[Union[Code, CodedConcept]] = None,
+#         severity: Optional[Union[Code, CodedConcept]] = None,
+#         stage: Optional[Union[Code, CodedConcept]] = None
+#     ) -> None:
+#         super().__init__(
+#             name=type,
+#             value=value,
+#             relationship_type=RelationshipTypeValues.HAS_CONCEPT_MOD
+#         )
+#         content = ContentSequence()
+#         if datetime_started is not None:
+#             datetime_started_item = DateTimeContentItem(
+#                 name=codes.DCM.DatetimeConcernResolved,
+#                 value=datetime_started,
+#                 relationship_type=RelationshipTypeValues.HAS_PROPERTIES
+#             )
+#             content.append(datetime_started_item)
 
-        if datetime_problem_resolved is not None:
-            datetime_problem_resolved_item = DateTimeContentItem(
-                name=codes.DCM.DatetimeConcernResolved,
-                value=datetime_problem_resolved,
-                relationship_type=RelationshipTypeValues.HAS_PROPERTIES
-            )
-            content.append(datetime_problem_resolved_item)
-        if status is not None:
-            status_item = CodeContentItem(
-                name=Code('33999-4', 'LN', 'Status'),  # codes.LN.Status
-                value=status
-            )
-            content.append(status_item)
-        if severity is not None:
-            severity_item = CodeContentItem(
-                name=codes.SCT.Severity,
-                value=severity,
-                relationship_type=RelationshipTypeValues.HAS_PROPERTIES
-            )
-            content.append(severity_item)
-        if stage is not None:
-            stage_item = CodeContentItem(
-                name=codes.SCT.Stage,
-                value=stage,
-                relationship_type=RelationshipTypeValues.HAS_PROPERTIES
-            )
-            content.append(stage_item)
-        if len(content) > 0:
-            self.ContentSequence = content
+#         if datetime_problem_resolved is not None:
+#             datetime_problem_resolved_item = DateTimeContentItem(
+#                 name=codes.DCM.DatetimeConcernResolved,
+#                 value=datetime_problem_resolved,
+#                 relationship_type=RelationshipTypeValues.HAS_PROPERTIES
+#             )
+#             content.append(datetime_problem_resolved_item)
+#         if status is not None:
+#             status_item = CodeContentItem(
+#                 name=Code('33999-4', 'LN', 'Status'),  # codes.LN.Status
+#                 value=status
+#             )
+#             content.append(status_item)
+#         if severity is not None:
+#             severity_item = CodeContentItem(
+#                 name=codes.SCT.Severity,
+#                 value=severity,
+#                 relationship_type=RelationshipTypeValues.HAS_PROPERTIES
+#             )
+#             content.append(severity_item)
+#         if stage is not None:
+#             stage_item = CodeContentItem(
+#                 name=codes.SCT.Stage,
+#                 value=stage,
+#                 relationship_type=RelationshipTypeValues.HAS_PROPERTIES
+#             )
+#             content.append(stage_item)
+#         if len(content) > 0:
+#             self.ContentSequence = content
 
 
 class Therapy(CodeContentItem):
@@ -101,7 +101,7 @@ class Therapy(CodeContentItem):
     """
 
     def __init__(self,
-                 value: Union[Code, CodedConcept],
+                 name: Union[Code, CodedConcept],
                  status: Optional[Union[Code, CodedConcept]] = None) -> None:
         super().__init__(
             name=CodedConcept(
@@ -109,8 +109,9 @@ class Therapy(CodeContentItem):
                 meaning='Therapy',
                 scheme_designator='SCT'
             ),
-            value=value,
-            relationship_type=RelationshipTypeValues.CONTAINS)
+            value=name,
+            relationship_type=RelationshipTypeValues.CONTAINS
+        )
         content = ContentSequence()
         if status is not None:
             status_item = CodeContentItem(
@@ -125,6 +126,7 @@ class Therapy(CodeContentItem):
             content.append(status_item)
         if len(content) > 0:
             self.ContentSequence = content
+        
 
 
 class ProblemProperties(Template):
@@ -134,7 +136,7 @@ class ProblemProperties(Template):
 
     def __init__(
         self,
-        concern_type: ConcernType,
+        concern_type: CodedConcept, # ConcernType,
         datetime_concern_noted: Optional[Union[str, datetime.datetime, DT]] = None,
         datetime_concern_resolved: Optional[Union[str, datetime.datetime, DT]] = None,
         health_status: Optional[Union[Code, CodedConcept]] = None,
@@ -143,11 +145,12 @@ class ProblemProperties(Template):
     ):
         item = ContainerContentItem(
             name=codes.DCM.Concern,
-            template_id='3829'
+            template_id='3829',
+            relationship_type=RelationshipTypeValues.CONTAINS
         )
         content = ContentSequence()
-        if not isinstance(concern_type, ConcernType):
-            raise TypeError('Argument "concern_type" must have type ConcernType.')
+        # if not isinstance(concern_type, ConcernType):
+        #     raise TypeError('Argument "concern_type" must have type ConcernType.')
         content.append(concern_type)
         if datetime_concern_noted is not None:
             datetime_concern_noted_item = DateTimeContentItem(
@@ -190,7 +193,8 @@ class ProblemProperties(Template):
             content.append(comment_item)
         if len(content) > 0:
             item.ContentSequence = content
-        self.append(item)
+        # self.append(item)
+        super().__init__([item])
 
 
 class ProblemList(Template):
@@ -306,7 +310,7 @@ class ProcedureProperties(Template):
                  comment: Optional[str] = None,
                  procedure_results: Optional[Sequence[Union[Code, CodedConcept]]] = None
                  ) -> None:
-        super().__init__()
+        # super().__init__()
         item = CodeContentItem(
             name=name,
             value=value,
@@ -393,7 +397,8 @@ class ProcedureProperties(Template):
                 content.append(procedure_result_item)
         if len(content) > 0:
             item.ContentSequence = content
-        self.append(item)
+        # self.append(item)
+        super().__init__([item])
 
 
 class SocialHistory(Template):
@@ -464,7 +469,8 @@ class SocialHistory(Template):
             content.append(drug_misuse_behavior_item)
         if len(content) > 0:
             item.ContentSequence = content
-        self.append(item)
+        # self.append(item)
+        super().__init__([item])
 
 
 class PastSurgicalHistory(Template):
@@ -906,7 +912,8 @@ class CardiovascularPatientHistory(Template):
     ) -> None:
         item = ContainerContentItem(
             name=codes.LN.History,
-            template_id='3802'
+            template_id='3802',
+            relationship_type=RelationshipTypeValues.CONTAINS
         )
         content = ContentSequence()
         if history is not None:
@@ -960,7 +967,8 @@ class CardiovascularPatientHistory(Template):
             content.extend(history_of_medical_device_use)
         if len(content) > 0:
             item.ContentSequence = content
-        self.append(item)
+        # self.append(item)
+        super().__init__([item])
 
 
 class PatientCharacteristicsForECG(Template):
@@ -982,7 +990,8 @@ class PatientCharacteristicsForECG(Template):
     ):
         item = ContainerContentItem(
             name=codes.DCM.PatientCharacteristics,
-            template_id='3704'
+            template_id='3704',
+            relationship_type=RelationshipTypeValues.CONTAINS
         )
         content = ContentSequence()
         if not isinstance(subject_age, int):
@@ -1117,7 +1126,8 @@ class PatientCharacteristicsForECG(Template):
             content.append(icd_in_situ_item)
         if len(content) > 0:
             item.ContentSequence = content
-        self.append(item)
+        # self.append(item)
+        super().__init__([item])
 
 
 class PriorECGStudy(Template):
@@ -1129,7 +1139,7 @@ class PriorECGStudy(Template):
         self,
         comparison_with_prior_study_done: Union[CodedConcept, Code],
         procedure_datetime: Optional[Union[str, datetime.datetime, DT]] = None,
-        procedure_stdy_instance_uid: Optional[UIDRefContentItem] = None,
+        procedure_study_instance_uid: Optional[UIDRefContentItem] = None,
         prior_report_for_current_patient: Optional[CompositeContentItem] = None,
         source_of_measurement: Optional[WaveformContentItem] = None
     ):
@@ -1159,12 +1169,12 @@ class PriorECGStudy(Template):
                 relationship_type=RelationshipTypeValues.CONTAINS
             )
             content.append(procedure_datetime_item)
-        if procedure_stdy_instance_uid is not None:
-            if not isinstance(procedure_stdy_instance_uid, UIDRefContentItem):
+        if procedure_study_instance_uid is not None:
+            if not isinstance(procedure_study_instance_uid, UIDRefContentItem):
                 raise TypeError(
                     'Argument "procedure_stdy_instance_uid" must have type UIDRefContentItem.'
                 )
-            content.append(procedure_stdy_instance_uid)
+            content.append(procedure_study_instance_uid)
         if prior_report_for_current_patient is not None:
             if not isinstance(prior_report_for_current_patient, CompositeContentItem):
                 raise TypeError(
@@ -1202,7 +1212,8 @@ class ECGWaveFormInformation(Template):
     ) -> None:
         item = ContainerContentItem(
             name=codes.LN.CurrentProcedureDescriptions,
-            template_id='3708'
+            template_id='3708',
+            relationship_type=RelationshipTypeValues.CONTAINS
         )
         content = ContentSequence()
         procedure_datetime_item = DateTimeContentItem(
@@ -1320,7 +1331,8 @@ class ECGWaveFormInformation(Template):
             content.extend(algorithm_identification)
         if len(content) > 0:
             item.ContentSequence = content
-        self.append(item)
+        # self.append(item)
+        super().__init__([item])
 
 
 class ECGMeasurementSource(Template):
@@ -1470,7 +1482,8 @@ class ECGGlobalMeasurements(Template):
     ) -> None:
         item = ContainerContentItem(
             name=codes.DCM.ECGGlobalMeasurements,
-            template_id='3713'
+            template_id='3713',
+            relationship_type=RelationshipTypeValues.CONTAINS
         )
         content = ContentSequence()
         if not isinstance(ventricular_heart_rate, float):
@@ -1626,7 +1639,8 @@ class ECGGlobalMeasurements(Template):
             content.append(number_of_ectopic_beats)
         if len(content) > 0:
             item.ContentSequence = content
-        self.append(item)
+        # self.append(item)
+        super().__init__([item])
 
 
 class ECGLeadMeasurements(Template):
@@ -1645,7 +1659,8 @@ class ECGLeadMeasurements(Template):
     ) -> None:
         item = ContainerContentItem(
             name=codes.DCM.ECGLeadMeasurements,
-            template_id='3714'
+            template_id='3714',
+            relationship_type=RelationshipTypeValues.CONTAINS
         )
         content = ContentSequence()
         if not isinstance(lead_id, (Code, CodedConcept)):
@@ -1739,7 +1754,8 @@ class ECGLeadMeasurements(Template):
                 content.append(finding_item)
         if len(content) > 0:
             item.ContentSequence = content
-        self.append(item)
+        # self.append(item)
+        super().__init__([item])
 
 
 class QuantitativeAnalysis(Template):
@@ -1754,7 +1770,8 @@ class QuantitativeAnalysis(Template):
     ) -> None:
         item = ContainerContentItem(
             name=codes.LN.CurrentProcedureDescriptions,
-            template_id='3708'
+            template_id='3708',
+            relationship_type=RelationshipTypeValues.CONTAINS
         )
         content = ContentSequence()
         if ecg_global_measurements is not None:
@@ -1776,7 +1793,8 @@ class QuantitativeAnalysis(Template):
                 content.extend(ecg_lead_measurement)
         if len(content) > 0:
             item.ContentSequence = content
-        self.append(item)
+        # self.append(item)
+        super().__init__([item])
 
 
 class ECGFinding(Template):
@@ -2013,10 +2031,10 @@ class ECGReport(Template):
                 'Argument "ecg_waveform_information" must have type ECGWaveFormInformation.'
             )
         content.extend(ecg_waveform_information)
-        if not isinstance(quantitative_analysis, QuantitativeAnalysis):
-            raise TypeError(
-                'Argument "quantitative_analysis" must have type QuantitativeAnalysis.'
-            )
+        # if not isinstance(quantitative_analysis, QuantitativeAnalysis):
+        #     raise TypeError(
+        #         'Argument "quantitative_analysis" must have type QuantitativeAnalysis.'
+        #     )
         content.extend(quantitative_analysis)
         if procedure_reported is not None:
             if not isinstance(procedure_reported, (CodedConcept, Code)):
@@ -2036,17 +2054,17 @@ class ECGReport(Template):
                 )
             content.extend(indications_for_procedure)
         if cardiovascular_patient_history is not None:
-            if not isinstance(cardiovascular_patient_history, CardiovascularPatientHistory):
-                raise TypeError(
-                    'Argument "cardiovascular_patient_history" must have type CardiovascularPatientHistory.'
-                )
-            content.append(cardiovascular_patient_history)
+            # if not isinstance(cardiovascular_patient_history, CardiovascularPatientHistory):
+            #     raise TypeError(
+            #         'Argument "cardiovascular_patient_history" must have type CardiovascularPatientHistory.'
+            #     )
+            content.extend(cardiovascular_patient_history)
         if patient_characteristics_for_ecg is not None:
-            if not isinstance(patient_characteristics_for_ecg, PatientCharacteristicsForECG):
-                raise TypeError(
-                    'Argument "patient_characteristics_for_ecg" must have type PatientCharacteristicsForECG.'
-                )
-            content.append(patient_characteristics_for_ecg)
+            # if not isinstance(patient_characteristics_for_ecg, PatientCharacteristicsForECG):
+            #     raise TypeError(
+            #         'Argument "patient_characteristics_for_ecg" must have type PatientCharacteristicsForECG.'
+            #     )
+            content.extend(patient_characteristics_for_ecg)
         if prior_ecg_study is not None:
             if not isinstance(prior_ecg_study, PriorECGStudy):
                 raise TypeError(
@@ -2058,16 +2076,17 @@ class ECGReport(Template):
                 raise TypeError(
                     'Argument "ecg_qualitative_analysis" must have type ECGQualitativeAnalysis.'
                 )
-            content.append(ecg_qualitative_analysis)
+            content.extend(ecg_qualitative_analysis)
         if summary_ecg is not None:
             if not isinstance(summary_ecg, SummaryECG):
                 raise TypeError(
                     'Argument "summary_ecg" must have type SummaryECG.'
                 )
-            content.append(summary_ecg)
+            content.extend(summary_ecg)
         if len(content) > 0:
             item.ContentSequence = content
-        self.append(item)
+        # self.append(item)
+        super().__init__([item], is_root=True)
 
 
 class LanguageOfValue(CodeContentItem):
