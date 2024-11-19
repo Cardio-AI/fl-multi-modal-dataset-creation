@@ -17,6 +17,8 @@ The content of the SR document is then searched hierarchically with the definiti
   
 Additionally, constraints such as specific code values can be included at each level in the `constraints` field to select from multiple values at the same level. Otherwise, the first found type match will be added to the OS-index.
 
+The extension was developed and tested with [KAAPANA v0.2.6](https://github.com/kaapana/kaapana/releases/tag/0.2.6).
+
 > [!CAUTION]
 > At the current version the meta-index and the opensearch-objects(dashboard, graphs,...) are overwritten with a empty/new one and a re-index pacs workflow is triggered afterwards. Please backup important data from the meta-index manually, if you plan to install this extension.
 > 
