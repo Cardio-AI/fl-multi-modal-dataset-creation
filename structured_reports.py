@@ -1,5 +1,6 @@
 """DICOM structured reporting templates."""
-from typing import Optional, Sequence, Union
+from abc import ABC
+from typing import List, Optional, Sequence, TypedDict, Union
 import datetime
 
 from pydicom.sr.coding import Code
@@ -970,6 +971,52 @@ class CardiovascularPatientHistory(Template):
         # self.append(item)
         super().__init__([item])
 
+class Units(TypedDict):
+    value: Union[float, None]
+    code_value: str
+    code_meaning: str
+
+class CIDUnits(ABC):
+    name: str
+    coding_scheme_designator: str = "UCUM"
+    units: List[Units]
+    def add_items(self, content:ContentSequence) -> None:
+        for unit in self.units:
+            if unit["value"] != None:
+                item = NumContentItem(
+                    name=self.name,
+                    value=unit["value"],
+                    unit=CodedConcept(
+                        value=unit["code_value"],
+                        meaning=unit["code_meaning"],
+                        scheme_designator=self.coding_scheme_designator
+                    ),
+                    relationship_type=RelationshipTypeValues.CONTAINS
+                )
+                content.append(item)
+
+
+class AgeUnit(CIDUnits):
+    name=codes.DCM.SubjectAge
+    def __init__(self, year: Union[str, None] = None,
+                 month: Union[str, None] = None,
+                 week: Union[str, None] = None,
+                 day: Union[str, None] = None,
+                 hour: Union[str, None] = None,
+                 minute: Union[str, None] = None) -> None:
+        self.units =[{'value': year,'code_value': "a",'code_meaning': "year"},
+                     {'value': month,'code_value': "mo",'code_meaning': "month"},
+                     {'value': week,'code_value': "wk",'code_meaning': "week"},
+                     {'value': day,'code_value': "d",'code_meaning': "day"},
+                     {'value': hour,'code_value': "h",'code_meaning': "hour"},
+                     {'value': minute,'code_value': "min",'code_meaning': "minute"}]
+
+
+class PressureUnit(CIDUnits):
+    def __init__(self, mmHg: Union[str, None] = None,
+                 kPa: Union[str, None] = None) -> None:
+        self.units =[{'value': mmHg,'code_value': "mm[Hg]",'code_meaning': "mmHg"},
+                     {'value': kPa,'code_value': "kPa",'code_meaning': "kPa"}]
 
 class PatientCharacteristicsForECG(Template):
     """:dcm:`TID 3704 <part16/sect_TID_3704.html>`
@@ -978,12 +1025,12 @@ class PatientCharacteristicsForECG(Template):
 
     def __init__(
         self,
-        subject_age: int,
+        subject_age: AgeUnit,
         subject_sex: str,
         patient_height: Optional[float] = None,
         patient_weight: Optional[float] = None,
-        systolic_blood_pressure: Optional[float] = None,
-        diastolic_blood_pressure: Optional[float] = None,
+        systolic_blood_pressure: Optional[PressureUnit] = None,
+        diastolic_blood_pressure: Optional[PressureUnit] = None,
         patient_state: Optional[Union[Code, CodedConcept]] = None,
         pacemaker_in_situ: Optional[Union[Code, CodedConcept]] = None,
         icd_in_situ: Optional[Union[Code, CodedConcept]] = None,
@@ -994,21 +1041,11 @@ class PatientCharacteristicsForECG(Template):
             relationship_type=RelationshipTypeValues.CONTAINS
         )
         content = ContentSequence()
-        if not isinstance(subject_age, int):
+        if not isinstance(subject_age, AgeUnit):
             raise TypeError(
-                'Argument "subject_age" must have type int.'
+                'Argument "subject_age" must have type AgeUnit.'
             )
-        subject_age_item = NumContentItem(
-            name=codes.DCM.SubjectAge,
-            value=subject_age,
-            unit=CodedConcept(
-                value='7456',
-                meaning='Age Unit',
-                scheme_designator='CID'
-            ),
-            relationship_type=RelationshipTypeValues.CONTAINS
-        )
-        content.append(subject_age_item)
+        subject_age.add_items(content)
         if not isinstance(subject_sex, str):
             raise TypeError(
                 'Argument "subject_sex" must have type str.'
@@ -1052,37 +1089,19 @@ class PatientCharacteristicsForECG(Template):
             )
             content.append(patient_weight_item)
         if systolic_blood_pressure is not None:
-            if not isinstance(systolic_blood_pressure, float):
+            if not isinstance(systolic_blood_pressure, PressureUnit):
                 raise TypeError(
-                    'Argument "systolic_blood_pressure" must have type float.'
+                    'Argument "systolic_blood_pressure" must have type PressureUnit.'
                 )
-            systolic_blood_pressure_item = NumContentItem(
-                name=codes.SCT.SystolicBloodPressure,
-                value=systolic_blood_pressure,
-                unit=CodedConcept(
-                    value='3500',
-                    meaning='Pressure Unit',
-                    scheme_designator='CID'
-                ),
-                relationship_type=RelationshipTypeValues.CONTAINS
-            )
-            content.append(systolic_blood_pressure_item)
+            systolic_blood_pressure.name = codes.SCT.SystolicBloodPressure
+            systolic_blood_pressure.add_items(content)
         if diastolic_blood_pressure is not None:
-            if not isinstance(diastolic_blood_pressure, float):
+            if not isinstance(diastolic_blood_pressure, PressureUnit):
                 raise TypeError(
-                    'Argument "diastolic_blood_pressure" must have type float.'
+                    'Argument "diastolic_blood_pressure" must have type PressureUnit.'
                 )
-            diastolic_blood_pressure_item = NumContentItem(
-                name=codes.SCT.DiastolicBloodPressure,
-                value=diastolic_blood_pressure,
-                unit=CodedConcept(
-                    value='3500',
-                    meaning='Pressure Unit',
-                    scheme_designator='CID'
-                ),
-                relationship_type=RelationshipTypeValues.CONTAINS
-            )
-            content.append(diastolic_blood_pressure_item)
+            diastolic_blood_pressure.name = codes.SCT.DiastolicBloodPressure
+            diastolic_blood_pressure.add_items(content)
         if patient_state is not None:
             if not isinstance(patient_state, (CodedConcept, Code)):
                 raise TypeError(
