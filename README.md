@@ -21,13 +21,14 @@ https://github.com/Cardio-AI/fl-multi-modal-dataset-creation.
 
 ## License
 
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+### high-dicom SR templates
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+The high dicom-SR templates are [MIT licensed](./LICENSE).
 
-You should have received a copy of the GNU Affero General Public License along with this program (see file LICENCE).
-If not, see https://www.gnu.org/licenses/.
+### annotation-collect-metadata
 
+The annotation-collect-metadata can redistribute and/or modify under the terms of the [GNU Affero General Public License](./annotation-collect-metadata/LICENSE).
+For more information see [annotation-collect-metadata](./annotation-collect-metadata/README.md)
 
 ## Citation
 

@@ -28,3 +28,14 @@ The extension was developed and tested with [KAAPANA v0.2.6](https://github.com/
 > - Dicom files with the modality `SR` and `SEG` are saved in the OS-Index as nested object, if the reference ID exits. Else there are only save in the PACS.
 > - Re-index dicom data is iterating two times over all pacs-data and extract in the first iteration the meta data from the `CT,MR,DX,MG,CR,ECG,XA,US,PT` modalities and in the second iteration from the annotation information (`SR, SEG`)
 > - The modality `RTSTRUCT` is not supported for annotation, yet.
+
+
+
+## License
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License along with this program (see file LICENSE).
+If not, see https://www.gnu.org/licenses/.
